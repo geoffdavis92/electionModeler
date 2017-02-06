@@ -37,6 +37,7 @@ export class PrimaryGenerator extends Component {
 		setTimeout(() => this.votePrimaries(primaryElection), 500)
 	}
 	votePrimaries(elections) {
+		const primaryWinners = []
 		elections.forEach((election,i,arr) => {
 			const { partyName, amount } = election,
 			 	  partyCandidates = [],
@@ -48,44 +49,55 @@ export class PrimaryGenerator extends Component {
 				}
 			})
 
-			let simpleVictory = false
+			let victorious = false
 			partyCandidates.forEach(candidate => {
-				const { range, name } = candidate
+				const { range, name, party, popularity } = candidate
 				console.log({ name, party: candidate.party, vote, rangeMin: range.min, comparison: (vote >= range.min && vote <= range.max) })
 				if (vote >= range.min && vote <= range.max) {
-					simpleVictory = name
-					return simpleVictory
+					victorious = {
+						name,
+						party,
+						vote,
+						range,
+						popularity
+					}
+					return victorious
 				}
 			})
 
-			if (simpleVictory) {
-				this.setState({
-					[`${partyName.toLowerCase()}PrimaryWinner`]: simpleVictory
-				})
+			if (victorious) {
+				primaryWinners.push(victorious)
 			} else {
 				console.error('ln 67: vote is faulty.')
 			}
 		});
 		const { conservativesPrimaryWinner, greenPrimaryWinner, liberalsPrimaryWinner } = this.state
-		console.log({ conservativesPrimaryWinner, greenPrimaryWinner, liberalsPrimaryWinner })
+		// console.log({ conservativesPrimaryWinner, greenPrimaryWinner, liberalsPrimaryWinner })
 		this.setState({
+			primaryWinners,
 			electionCompleted: true
 		})
-		this.props.electionCompleteCallback({ conservativesPrimaryWinner, greenPrimaryWinner, liberalsPrimaryWinner })
+		this.props.electionCompleteCallback(primaryWinners)
 	}
 	render() {
 		if ( this.state.electionCompleted ) {
-			const partyHeaders = this.props.parties.map((party,i) => <th key={i}>{party.name}</th>)
+			const primaryWinners = this.state.primaryWinners.map((winner,i) => (
+				  	<tr key={i}>
+				  		<td>{winner.name}</td>
+				  		<td className={`party-${winner.party.toLowerCase()}`}>{winner.party}</td>
+				  	</tr>
+				  ))
 			return (
 				<article>
 					<table>
 						<thead>
 							<tr>
-								{partyHeaders}
+								<th>Candidate</th>
+								<th>Party</th>
 							</tr>
 						</thead>
 						<tbody>
-
+							{primaryWinners}
 						</tbody>
 					</table>
 				</article>
