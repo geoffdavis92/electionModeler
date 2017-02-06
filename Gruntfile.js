@@ -19,12 +19,14 @@ module.exports = function(grunt) {
 						cwd: 'static/sass',
 						src: ['index.sass'],
 						dest: 'public/css',
+						ext: '.css'
 					},
 					{
 						expand: true,
 						cwd: 'static/sass/components',
 						src: ['**/index.sass'],
 						dest: 'src/css',
+						ext: '.css'
 					}
 				],
 			}
