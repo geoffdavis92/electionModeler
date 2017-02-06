@@ -17,42 +17,74 @@ export const candidates = [
 	{
 		name: 'John Doe',
 		party: 'Liberals',
-		popularity: .6
+		popularity: .6,
+		range: {
+			min: 1,
+			max: 60
+		} 
 	},
 	{
 		name: 'Laura Smith',
 		party: 'Conservatives',
-		popularity: .34
+		popularity: .34,
+		range: {
+			min: 66,
+			max: 100
+		}
 	},
 	{
 		name: 'Jack Stone',
 		party: 'Green',
-		popularity: .75
+		popularity: .75,
+		range: {
+			min: 1,
+			max: 75
+		}
 	},
 	{
 		name: 'Jeremy Johnson',
 		party: 'Liberals',
-		popularity: .3
+		popularity: .3,
+		range: {
+			min: 61,
+			max: 90
+		}
 	},
 	{
 		name: 'James Jones',
 		party: 'Conservatives',
-		popularity: .33
+		popularity: .33,
+		range: {
+			min: 33,
+			max: 65
+		}
 	},
 	{
 		name: 'Lacy Woods',
 		party: 'Conservatives',
-		popularity: .33
+		popularity: .33,
+		range: {
+			min: 1,
+			max: 32
+		}
 	},
 	{
 		name: 'Lana Del Mar',
 		party: 'Liberals',
-		popularity: .1
+		popularity: .1,
+		range: {
+			min: 91,
+			max: 100
+		}
 	},
 	{
 		name: 'Leslie Rotweiler',
 		party: 'Green',
-		popularity: .25
+		popularity: .25,
+		range: {
+			min: 76,
+			max: 100
+		}
 	}
 ]
 

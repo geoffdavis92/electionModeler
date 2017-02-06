@@ -6,7 +6,7 @@ const random = n => Math.floor(Math.random() * n)
 export class PrimaryGenerator extends Component {
 	constructor() {
 		super()
-		this.state = {}
+		this.state = {electionCompleted: false}
 		this.initGenerator = this.initGenerator.bind(this)
 		this.getPrimaryVoteAmount = this.getPrimaryVoteAmount.bind(this)
 		this.votePrimaries = this.votePrimaries.bind(this)
@@ -16,6 +16,7 @@ export class PrimaryGenerator extends Component {
 		return Math.floor(share * totalVotes);
 	}
 	initGenerator() {
+		console.clear()
 		const { l, c, g } = this.props.trendData,
 			  districts = this.props.popData;
 		let totalPop = 0,
@@ -26,7 +27,6 @@ export class PrimaryGenerator extends Component {
 		});
 
 		[l,c,g].forEach((party,i,arr) => {
-			console.log(party)
 			primaryElection.push({partyName:party.name,amount:this.getPrimaryVoteAmount(party,totalPop)})
 		})
 
@@ -39,7 +39,8 @@ export class PrimaryGenerator extends Component {
 	votePrimaries(elections) {
 		elections.forEach((election,i,arr) => {
 			const { partyName, amount } = election,
-			 	  partyCandidates = [];
+			 	  partyCandidates = [],
+			 	  vote = random(100);
 			this.props.candidates.forEach((candidate,_i,_arr) => {
 				const { name, party, popularity } = candidate
 				if (party === partyName) {
@@ -47,33 +48,54 @@ export class PrimaryGenerator extends Component {
 				}
 			})
 
-			console.log(partyCandidates)
-
-			// use Math.random to choose a candidate
-			// if mathRandom 
 			let simpleVictory = false
 			partyCandidates.forEach(candidate => {
-				const vote = random(100)
-				if (vote >= candidate.popularity) {
-					simpleVictory = candidate.name
+				const { range, name } = candidate
+				console.log({ name, party: candidate.party, vote, rangeMin: range.min, comparison: (vote >= range.min && vote <= range.max) })
+				if (vote >= range.min && vote <= range.max) {
+					simpleVictory = name
 					return simpleVictory
 				}
 			})
 
 			if (simpleVictory) {
 				this.setState({
-					[`primary${partyName.toUpperCase()}`]: simpleVictory
+					[`${partyName.toLowerCase()}PrimaryWinner`]: simpleVictory
 				})
 			} else {
 				console.error('ln 67: vote is faulty.')
 			}
+		});
+		const { conservativesPrimaryWinner, greenPrimaryWinner, liberalsPrimaryWinner } = this.state
+		console.log({ conservativesPrimaryWinner, greenPrimaryWinner, liberalsPrimaryWinner })
+		this.setState({
+			electionCompleted: true
 		})
+		this.props.electionCompleteCallback({ conservativesPrimaryWinner, greenPrimaryWinner, liberalsPrimaryWinner })
 	}
 	render() {
-		return (
-			<article>
-				<button id="init" onClick={this.initGenerator}>Init</button>
-			</article>
-		)
+		if ( this.state.electionCompleted ) {
+			const partyHeaders = this.props.parties.map((party,i) => <th key={i}>{party.name}</th>)
+			return (
+				<article>
+					<table>
+						<thead>
+							<tr>
+								{partyHeaders}
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</article>
+			)
+		} else {
+			return (
+				<article>
+					<button id="init" onClick={this.initGenerator}>Init</button>
+				</article>
+			)
+		}
 	}
 }
