@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import AJAX from 'ajax.js'
 
+const random = n => Math.floor(Math.random() * n)
+
 export class PrimaryGenerator extends Component {
 	constructor() {
 		super()
@@ -14,7 +16,7 @@ export class PrimaryGenerator extends Component {
 		return Math.floor(share * totalVotes);
 	}
 	initGenerator() {
-		const { lD, c, g } = this.props.trendData,
+		const { l, c, g } = this.props.trendData,
 			  districts = this.props.popData;
 		let totalPop = 0,
 			primaryElection = [];
@@ -23,7 +25,7 @@ export class PrimaryGenerator extends Component {
 			totalPop += pop;
 		});
 
-		[lD,c,g].forEach((party,i,arr) => {
+		[l,c,g].forEach((party,i,arr) => {
 			console.log(party)
 			primaryElection.push({partyName:party.name,amount:this.getPrimaryVoteAmount(party,totalPop)})
 		})
@@ -41,18 +43,30 @@ export class PrimaryGenerator extends Component {
 			this.props.candidates.forEach((candidate,_i,_arr) => {
 				const { name, party, popularity } = candidate
 				if (party === partyName) {
-					partyCandidates.push(candidate) //vote:(Math.floor(popularity*amount)),...
+					partyCandidates.push({...candidate, popularity:(popularity*100)}) //vote:(Math.floor(popularity*amount)),...
 				}
 			})
-			
-			// Vote for each primary nominee
-			for(let currentVote=0;currentVote<amount;currentVote++) {
-				
-			}
 
-			this.setState({
-				[`primary${partyName.toUpperCase()}`]: 0
+			console.log(partyCandidates)
+
+			// use Math.random to choose a candidate
+			// if mathRandom 
+			let simpleVictory = false
+			partyCandidates.forEach(candidate => {
+				const vote = random(100)
+				if (vote >= candidate.popularity) {
+					simpleVictory = candidate.name
+					return simpleVictory
+				}
 			})
+
+			if (simpleVictory) {
+				this.setState({
+					[`primary${partyName.toUpperCase()}`]: simpleVictory
+				})
+			} else {
+				console.error('ln 67: vote is faulty.')
+			}
 		})
 	}
 	render() {
